@@ -1,22 +1,21 @@
-export const GET_POKEMONS = "GET_POKEMONS";
-export const GET_POKEMONS_SUCCESS = "GET_POKEMONS_SUCCESS";
-export const GET_POKEMONS_FAILURE = "GET_POKEMONS_FAILURE";
+export const GET_POKEMONS_LIST = "GET_POKEMONS_LIST";
+export const GET_POKEMONS_LIST_SUCCESS = "GET_POKEMONS_LIST_SUCCESS";
+export const GET_POKEMONS_LIST_FAILURE = "GET_POKEMONS_LIST_FAILURE";
 
-export const GET_NEXT_POKEMONS_BATCH = "GET_NEXT_POKEMONS_BATCH";
-export const GET_NEXT_POKEMONS_BATCH_SUCCESS =
-  "GET_NEXT_POKEMONS_BATCH_SUCCESS";
-export const GET_NEXT_POKEMONS_BATCH_FAILURE =
-  "GET_NEXT_POKEMONS_BATCH_FAILURE";
-export const ADD_NEXT_POKEMONS_BATCH = "ADD_NEXT_POKEMONS_BATCH";
+export const GET_NEXT_POKEMONS_LIST = "GET_NEXT_POKEMONS_LIST";
+export const GET_NEXT_POKEMONS_LIST_SUCCESS =
+  "GET_NEXT_POKEMONS_LIST_SUCCESS";
+export const GET_NEXT_POKEMONS_LIST_FAILURE =
+  "GET_NEXT_POKEMONS_LIST_FAILURE";
 
 /**
  * Get Pokemons
  *
  * @returns {Object} action.
  */
-export const getPokemons = () => {
+export const getPokemonsList = () => {
   return {
-    type: GET_POKEMONS,
+    type: GET_POKEMONS_LIST
   };
 };
 
@@ -25,9 +24,9 @@ export const getPokemons = () => {
  *@param {Object} pokemons
  * @returns {Object} action
  */
-export const getPokemonsSuccess = (pokemons) => {
+export const getPokemonsListSuccess = (pokemons) => {
   return {
-    type:GET_POKEMONS_SUCCESS,
+    type:GET_POKEMONS_LIST_SUCCESS,
     pokemons
   };
 };
@@ -37,21 +36,21 @@ export const getPokemonsSuccess = (pokemons) => {
  *@param {Object} errors
  * @returns {Object} action
  */
- export const getPokemonsFailure = (errors) => {
+ export const getPokemonsListFailure = (errors) => {
     return {
-      type:GET_POKEMONS_FAILURE,
+      type:GET_POKEMONS_LIST_FAILURE,
       errors
     };
   };
 
   /**
- * Get Next pokemons batch
+ * Get Next pokemons list
  * 
  * @returns {Object} action
  */
- export const getNextPokemonsBatch = () => {
+ export const getNextPokemonsList = () => {
     return {
-      type:GET_NEXT_POKEMONS_BATCH
+      type:GET_NEXT_POKEMONS_LIST
     };
   };
   
@@ -60,9 +59,9 @@ export const getPokemonsSuccess = (pokemons) => {
  *@param {Object} pokemons
  * @returns {Object} action
  */
-export const getNextPokemonsBatchsSuccess = (pokemons) => {
+export const getNextPokemonsListSuccess = (pokemons) => {
     return {
-      type:GET_NEXT_POKEMONS_BATCH_SUCCESS,
+      type:GET_NEXT_POKEMONS_LIST_SUCCESS,
       pokemons
     };
   };
@@ -73,22 +72,12 @@ export const getNextPokemonsBatchsSuccess = (pokemons) => {
  *@param {Object} errors
  * @returns {Object} action
  */
-export const getNextPokemonsBatchFailure = (errors) => {
+export const getNextPokemonsListFailure = (errors) => {
     return {
-      type:GET_NEXT_POKEMONS_BATCH_FAILURE,
+      type:GET_NEXT_POKEMONS_LIST_FAILURE,
       errors
     };
   };
 
 
-  /**
- * Add next pokemons batch to items state.
- *
- * @returns {Object} action.
- */
-export const addNextPokemonsBatch = () => {
-    return {
-      type: ADD_NEXT_POKEMONS_BATCH
-    };
-  };
   

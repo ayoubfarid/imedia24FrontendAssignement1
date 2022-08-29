@@ -1,98 +1,71 @@
 import * as actions from "./actions";
-import { BATCH_SIZE, MAX_PAGE_LENGTH } from "../constants";
+import { BATCH_SIZE } from "../constants";
 
-/**
- *
- * Check if number of items exceeds the desired end of page
- *
- * @param {number} currentPage.
- *  @param {number} batchSize
- * @param {number} maxPageLength
- * @return {boolean}
- */
-export function checkEndOfPage(currentPage, batchSize, maxPageLength) {
-  return batchSize * currentPage > maxPageLength;
-}
+
 const initialState = {
   isFetching: true,
   hasErrored: false,
-  isEndOfCatalogue: false,
   items: [],
-  nextItemsBatch: [],
-  currentPage: 1,
+  nextItemsList: [],
+  currentOffset: 0,
 };
 
 const pokemons = (state = initialState, action) => {
-  const isEndOfPage = checkEndOfPage(
-    BATCH_SIZE,
-    state.currentPage,
-    MAX_PAGE_LENGTH
-  );
+  
   switch (action.type) {
-    case actions.GET_POKEMONS:
+    case actions.GET_POKEMONS_LIST:
       return {
         ...state,
         isFetching: true,
         hasErrored: false,
       };
-    case actions.GET_POKEMONS_SUCCESS:
-      if (isEndOfPage) {
+    case actions.GET_POKEMONS_LIST_SUCCESS:
+      
+      return {
+        ...state,
+        isFetching: false,
+        hasErrored: false,
+        isEndOfPage: false,
+        items: [...state.items, ...action.pokemons.results],
+        currentOffset: state.currentOffset + BATCH_SIZE,
+      };
+      case actions.GET_POKEMONS_LIST_FAILURE:
+      return {
+        ...state,
+        isFetching: false,
+        hasErrored: true,
+      };
+      case actions.GET_NEXT_POKEMONS_LIST:
+      
         return {
           ...state,
           isFetching: true,
           hasErrored: false,
-          isEndOfPage:true
+          nextItemsList: action.pokemons.results,
+          currentOffset: state.currentOffset + BATCH_SIZE,
         };
-      }
+  
+    case actions.GET_NEXT_POKEMONS_LIST_SUCCESS:
+      
       return {
         ...state,
         isFetching: false,
         hasErrored: false,
-        isEndOfPage:false,
-        items:[...state.items, ...action.pokemons.results],
-        currentPage: state.currentPage + 1
-      };
-      case actions.GET_POKEMONS_FAILURE:
-      return {
-        ...state,
-        isFetching: false,
-        hasErrored: true
-      };
-      case actions.GET_NEXT_POKEMONS_BATCH_SUCCESS:
-      if (isEndOfPage) {
-        return {
-          ...state,
-          isFetching: false,
-          hasErrored: false,
-          isEndOfPage: true
-        };
-      }
-
-      return {
-        ...state,
-        isFetching: false,
-        hasErrored: false,
-        nextItemsBatch: action.pokemons.results,
-        currentPage: state.currentPage + 1
+        items: [...state.items, ...state.nextItemsList],
+        nextItemsList: [],
+        currentOffset: state.currentOffset + BATCH_SIZE,
       };
 
-      case actions.GET_NEXT_POKEMONS_BATCH_FAILURE:
+    case actions.GET_NEXT_POKEMONS_LIST_FAILURE:
       return {
         ...state,
         isFetching: false,
-        hasErrored: true
+        hasErrored: true,
       };
-    case actions.ADD_NEXT_POKEMONS_BATCH:
-      return {
-        ...state,
-        items: [...state.items, ...state.nextItemsBatch],
-        nextItemsBatch: []
-      };
+    
     default:
       return state;
-  
   }
 };
 
 export default pokemons;
-

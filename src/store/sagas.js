@@ -1,49 +1,43 @@
 import { call, put, takeLatest, select } from "redux-saga/effects";
 import * as actions from "./actions";
-import { getData } from "../services";
-import { BATCH_SIZE, MAX_PAGE_LENGTH } from "../constants";
+import { getPokemonsData } from "../services";
+import { BATCH_SIZE, MAX_LIMIT } from "../constants";
 
 function* fetchPokemonsSaga() {
   yield takeLatest(
-    [actions.GET_POKEMONS, actions.GET_NEXT_POKEMONS_BATCH],
+    [actions.GET_POKEMONS_LIST, actions.GET_NEXT_POKEMONS_LIST],
     function* ({ type }) {
       try {
-        const { currentPage, isEndOfPage } = yield select(
+        const { currentOffset } = yield select(
           (state) => state.pokemons
         );
-        if (isEndOfPage) {
-          const itemsReminder = MAX_PAGE_LENGTH % BATCH_SIZE;
-          if (itemsReminder === 0) {
-            return;
-          }
-          const pokemons = yield call(
-            getData,
-            `https://randomuser.me/api/?page=${currentPage}&results=${itemsReminder}`
-          );
-
-          yield put(actions.getPokemonsSuccess(pokemons));
-
+        const interval = {
+          limit: BATCH_SIZE,
+          offset: currentOffset,
+        };
+        if (currentOffset === MAX_LIMIT) {
+          return;
         }
-        const pokemons = yield call(
-            getData,
-            `https://randomuser.me/api/?page=${currentPage}&results=${BATCH_SIZE}`
-          );
-  
-          if (type === actions.GET_POKEMONS) {
-            yield put(actions.getPokemonsSuccess(pokemons));
-          } else {
-            yield put(actions.getNextPokemonsBatchsSuccess(pokemons));
-          }
-  
-          if (type === actions.GET_POKEMONS) {
-            yield put(actions.getNextPokemonsBatch());
-          }
+        
+        const pokemons = yield call(getPokemonsData, 
+            `https://pokeapi.co:443/api/v2/pokemon/?limit=${interval.limit}&offset=${interval.offset}`
+            );
+
+        if (type === actions.GET_POKEMONS_LIST) {
+          yield put(actions.getPokemonsListSuccess(pokemons));
+        } else {
+          yield put(actions.getNextPokemonsListSuccess(pokemons));
+        }
+
+        if (type === actions.GET_POKEMONS_LIST) {
+          yield put(actions.getNextPokemonsList());
+        }
       } catch (error) {
-        if (type === actions.GET_POKEMONS) {
-            yield put(actions.getPokemonsFailure());
-          } else {
-            yield put(actions.getNextPokemonsBatchFailure());
-          }
+        if (type === actions.GET_POKEMONS_LIST) {
+          yield put(actions.getPokemonsListFailure());
+        } else {
+          yield put(actions.getNextPokemonsListFailure());
+        }
       }
     }
   );

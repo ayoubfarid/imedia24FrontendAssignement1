@@ -1,15 +1,15 @@
-import logo from './logo.svg';
-import './App.css';
+import "./App.css";
 import React, { useState, useEffect } from "react";
 import { useSelector, useDispatch } from "react-redux";
-import { getPokemons, addNextPokemonsBatch } from "./store/actions";
-
+import { getNextPokemonsList, getPokemonsList } from "./store/actions";
+import Pokemon from "./components/Pokemon";
+import Spinner from 'react-bootstrap/Spinner';
 
 function App() {
   const [isBottom, setIsBottom] = useState(false);
 
   const { pokemons } = useSelector((state) => state);
-  const { nextItemsBatch, isFetching, hasErrored, isEndOfPage } = pokemons;
+  const { nextItemsList, isFetching, hasErrored, isEndOfPage } = pokemons;
 
   const dispatch = useDispatch();
 
@@ -35,54 +35,56 @@ function App() {
 
   // get users when page is loading
   useEffect(() => {
-    dispatch(getPokemons());
+    dispatch(getPokemonsList());
   }, [dispatch]);
 
   // handle re-rendering when list of pokemons get to the bottom of the page
   useEffect(() => {
     if (isBottom) {
-      if (nextItemsBatch.length) {
-        // render the next batch of pre-fetched list of pokemons
-        dispatch(addNextPokemonsBatch());
+      if (nextItemsList.length) {
+        // render the next List of pre-fetched list of pokemons
+        dispatch(getNextPokemonsList());
       } else {
         // fetch another batch
-        dispatch(getPokemons());
+        dispatch(getPokemonsList());
       }
 
       setIsBottom(false);
     }
-  }, [isBottom, nextItemsBatch, dispatch, setIsBottom]);
+  }, [isBottom, nextItemsList, dispatch, setIsBottom]);
 
   return (
     <>
-      <div>
-        <h2 className="page-title">Infinite Scrolling App</h2>
-        {pokemons.items.map((user) => (
-          <div key={user.email} className="item-container">
-            
-            <div style={{ marginLeft: "20px" }}>
-              <h3>
-                {user.name.first} {user.name.last}
-              </h3>
-              
+      <div className="main-container">
+
+
+        <h2 className="page-title">Pokemons List</h2>
+        <p className="info-text">This project shows a demo of fetching pokemons list </p>
+        <div className="container">
+
+          {pokemons.items.map((pokemon) => (
+            <div key={pokemon.name}>
+              <Pokemon name={pokemon.name} url={pokemon.url} />
             </div>
-          </div>
-        ))}
+          ))}
+        </div>
       </div>
       {pokemons.items.length && (
-        <div className="users-listing">Showing {pokemons.items.length} pokemons</div>
+        <div className="users-listing">
+         {pokemons.items.length} pokemons is showed
+        </div>
       )}
       {!pokemons.items.length && !isFetching ? (
         <p className="info-text">Couldn't find any pokemons.</p>
       ) : isEndOfPage ? (
         <p className="info-text">End of pokemons catalogue.</p>
       ) : isFetching ? (
-        <p className="info-text">Loading...</p>
+        <p className="info-text"> <Spinner animation="border" /> Loading...</p>
       ) : hasErrored ? (
         <p className="info-text">
           There was an error while fetching pokemons data.
-        </p>
-      ) : null}
+        </p>)
+        : null}
     </>
   );
 }

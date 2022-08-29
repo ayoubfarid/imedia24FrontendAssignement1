@@ -4,7 +4,9 @@
  * @param {string} endpoint.
  * @returns {JSON} response from API.
  */
- const getData = (endpoint) => {
+ 
+
+  const getPokemonsData = (endpoint) => {
     return fetch(endpoint)
       .then((response) => {
         if (!response.ok) throw new Error(response.statusText);
@@ -17,5 +19,11 @@
       });
   };
   
-  export { getData };
+
+  
+  
+  
+
+  
+  export { getPokemonsData };
   
