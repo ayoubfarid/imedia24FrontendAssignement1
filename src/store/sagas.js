@@ -48,3 +48,4 @@ function* fetchPokemonsSaga() {
     }
   );
 }
+export default fetchPokemonsSaga;
