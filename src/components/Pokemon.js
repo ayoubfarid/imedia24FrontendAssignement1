@@ -5,23 +5,38 @@ import "./Pokemon.css";
 import { Card } from "react-bootstrap";
 
 class Pokemon extends Component {
+  //initial state
+
   state = {
-    name: "",
-    imageUrl: "",
-    id: "",
-    description:'',
-    show: false,
+    name: "", //pokemon name
+    imageUrl: "", //pokemon image url
+    id: "", //identifier
+    description: "", //pokemons desciption
+    show: false, //modal state
   };
+  /**
+   * show modified
+   * @returns state.show
+   */
   handleClose = () =>
     this.setState({
       show: false,
     });
+  /**
+   * show modified
+   * @returns state.show
+   */
   handleShow = () => {
     this.setState({
       show: true,
     });
     console.log("show Modal", this.state);
   };
+  /**
+   * get pokemons description
+   * @param {*} id
+   * @returns
+   */
   getPokemonDescription = (id) => {
     let endpoint = `https://pokeapi.co/api/v2/characteristic/${id}/`;
     return fetch(endpoint)
@@ -30,20 +45,23 @@ class Pokemon extends Component {
         return response.json();
       })
       .catch((err) => {
-        return {}
+        return {};
       });
   };
   componentDidMount() {
+    //destruction props to get properities
     const { name, url } = this.props;
     const pokemonId = url.split("/")[url.split("/").length - 2];
-    let pokemonDescription=''
+    let pokemonDescription = "";
     const imageUrl = `https://raw.githubusercontent.com/PokeAPI/sprites/master/sprites/pokemon/${pokemonId}.png`;
-    
+
+    //fetching pokemon description by id
     this.getPokemonDescription(pokemonId).then((data) => {
-      console.log(data.descriptions[7].description);
-      pokemonDescription=data.descriptions[7].description
-      this.setState({ description:pokemonDescription});
+      pokemonDescription = data.descriptions[7].description;
+      this.setState({ description: pokemonDescription });
     });
+
+    //modify the state object
     this.setState({ name, imageUrl, pokemonId });
   }
 
@@ -57,9 +75,7 @@ class Pokemon extends Component {
 
           <Modal.Body>
             <img alt="" className="pokemon-img" src={this.state.imageUrl} />
-            <p>
-                {this.state.description}
-            </p>
+            <p>{this.state.description}</p>
           </Modal.Body>
 
           <Modal.Footer>
@@ -72,7 +88,7 @@ class Pokemon extends Component {
             <Card.Title>
               <h4 className="pokemon-name">{this.state.name}</h4>
             </Card.Title>
-            
+
             <Button variant="light" onClick={this.handleShow}>
               More infos...
             </Button>
