@@ -79,10 +79,7 @@ const PokemonsList = () => {
           <p className="info-text">End of pokemons catalogue.</p>
         ) : isFetching ? (
           <p className="info-text"> <Spinner animation="border" /> Loading...</p>
-        ) : hasErrored ? (
-          <p className="info-text">
-            There was an error while fetching pokemons data.
-          </p>)
+        )
           : null}
       </>
     );
